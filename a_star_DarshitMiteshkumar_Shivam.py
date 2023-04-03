@@ -89,12 +89,15 @@ while True:
         continue
     else:
         break
+#Turtlebot3 burger parameters
+radii = 0.105 #Turtlebot3 radius
+L = 0.160 #Turtlebot 3 wheel distance
+R = 0.033 #Robot wheel radius
 # Taking input from user for clearance and radius of robot and defining the canvas
-print("ROBOT CLEARANCE DIMENSIONS AND RADIUS. Enter valid dimensions between 0 to 50")
+print("ROBOT CLEARANCE DIMENSIONS AND RADIUS(Radius is fixed). Enter valid dimensions between 0 to 50")
 while (True):
     clr = int(input("Enter the clearance of the robot: "))
-    radii = int(input("Enter the radius of the robot: "))
-    if ((clr>0 and clr<50) and (radii>0 and radii<50)):
+    if ((clr>0 and clr<50)):
         print("Valid coordinates received")
         #Define the Surface Map
         screen = pyg.Surface((600, 250))
@@ -148,6 +151,19 @@ while True:
         break
     except ValueError:
         print("Wrong input entered. Please enter an integer in correct range x(0,599) and y(0,249).")        
+
+# Take robot wheel RPMs
+while True:
+    try:
+        print("Enter the Robot RPM sets")
+        RPM1 = float(input("Enter Robot wheel RPM 1: "))
+        RPM2 = float(input("Enter Robot wheel RPM 2: "))
+        if (RPM1<0 or RPM2<0):
+            print("Negative values not allowed. Enter valid values of RPM")
+            continue
+        break
+    except ValueError:
+        print("Wrong input detected, Enter again")
 
 
 ctc_node=0  # cost to come for start node
