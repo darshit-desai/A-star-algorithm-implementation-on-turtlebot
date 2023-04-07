@@ -105,11 +105,11 @@ def cost(Xi,Yi,Thetai,UL,UR):
         t = t + dt
         Xs = Xn
         Ys = Yn
-        Xn = 0.5*r * (UL + UR) * math.cos(Thetan) * dt
-        Yn = 0.5*r * (UL + UR) * math.sin(Thetan) * dt
+        Xn += 0.5*r * (UL + UR) * math.cos(Thetan) * dt
+        Yn += 0.5*r * (UL + UR) * math.sin(Thetan) * dt
         Thetan += (r / L) * (UR - UL) * dt
         D=D+ math.sqrt(math.pow((0.5*r * (UL + UR) * math.cos(Thetan) * dt),2)+math.pow((0.5*r * (UL + UR) * math.sin(Thetan) * dt),2))
-        points.append((Xn,Yn))
+        points.append((round(Xn),round(Yn)))
     Thetan = 180 * (Thetan) / 3.14
     
     return Xn, Yn, Thetan, D, points
