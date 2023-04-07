@@ -6,51 +6,10 @@ from queue import PriorityQueue
 import math
 import time
 
-# Function to find the points between 2 points
-def bresenham_line(x0, y0, x1, y1):
-    dx = abs(x1 - x0)
-    dy = abs(y1 - y0)
-    sx = 1 if x0 < x1 else -1
-    sy = 1 if y0 < y1 else -1
-    err = dx - dy
-    
-    points = []
-    while x0 != x1 or y0 != y1:
-        points.append((x0, y0))
-        e2 = 2 * err
-        if e2 > -dy:
-            err -= dy
-            x0 += sx
-        if e2 < dx:
-            err += dx
-            y0 += sy
-    
-    points.append((x1, y1))
-    return points
 
-# Function that appends all the exploration nodes to a list new_nodes
-def move_robot(robot,curr_theta, costtocome, rpm1, rpm2):
-    x,y=robot
-    new_nodes = []
-    for t in range(-60,61,30):
-        x_t,y_t, t_t, c2g, c2c=  actions(x,y,t,curr_theta,costtocome,rpm1,rpm2)
-        robot_position=(x_t,y_t)
-        points=bresenham_line(x,y,x_t,y_t)
-        
-        new_nodes.append([c2g+c2c,c2c,c2g,robot_position,t_t,points])
-    return new_nodes
+
 
 # Function to calculate distance between two points
-def euclidean(x,y,xg,yg):
-    return math.dist((x,y),(xg,yg))
-
-# Function that generated new postions and cost for robot exploration
-def actions(x,y,t,ct,c2c,rpm1, rpm2):
-    action = [[0,rpm1],[rpm1,0],[rpm1,rpm1],[0, rpm2],[rpm2, 0],[rpm2, rpm2],[rpm1, rpm2],[rpm2, rpm1]]
-    xr,yr=(round(x+step_size*np.cos(np.pi*(t+ct)/180)),round(y+step_size*np.sin(np.pi*(t+ct)/180)))
-    c2g = euclidean(xr,yr,goal_x,goal_y)
-    c2c = c2c+step_size
-    return xr,yr,t+ct,c2g,c2c
 
 # Function that appends the generated nodes to the open list if node not in open list
 # If the list is in open list it updates the open list
@@ -167,6 +126,48 @@ while True:
     except ValueError:
         print("Wrong input detected, Enter again")
 
+
+def cost(Xi,Yi,Thetai,UL,UR):
+    t = 0
+    r = 0.038
+    L = 0.354
+    dt = 0.1
+    Xn=Xi
+    Yn=Yi
+    Thetan = 3.14 * Thetai / 180
+
+
+# Xi, Yi,Thetai: Input point's coordinates
+# Xs, Ys: Start point coordinates for plot function
+# Xn, Yn, Thetan: End point coordintes
+    D=0
+    while t<1:
+        t = t + dt
+        Xs = Xn
+        Ys = Yn
+        Xn = 0.5*r * (UL + UR) * math.cos(Thetan) * dt
+        Yn = 0.5*r * (UL + UR) * math.sin(Thetan) * dt
+        Thetan += (r / L) * (UR - UL) * dt
+        D=D+ math.sqrt(math.pow((0.5*r * (UL + UR) * math.cos(Thetan) * dt),2)+math.pow((0.5*r * (UL + UR) * math.sin(Thetan) * dt),2))
+    Thetan = 180 * (Thetan) / 3.14
+    return Xn, Yn, Thetan, D
+
+# for action in actions:
+#      k=cost(0,0,45, action[0],action[1])      # (0,0,45) hypothetical start configuration, this dosn't matter for calucating the edges'costs
+#      print(k[3])
+
+
+# Function that appends all the exploration nodes to a list new_nodes
+def move_robot(robot,curr_theta, costtocome, rpm1, rpm2):
+    x,y=robot
+    new_nodes = []
+    actions = [[0,rpm1],[rpm1,0],[rpm1,rpm1],[0, rpm2],[rpm2, 0],[rpm2, rpm2],[rpm1, rpm2],[rpm2, rpm1]]
+    for action in actions:
+        x_t,y_t, t_t,c2c=  actions(x,y,curr_theta,rpm1,rpm2)
+        c2g=math.dist((x_t,y_t),(goal_x,goal_y))
+        robot_position=(x_t,y_t)
+        new_nodes.append([c2g+c2c,c2c+costtocome,c2g,robot_position,t_t])
+    return new_nodes
 
 ctc_node=0  # cost to come for start node
 ctc_goal=math.dist((start_x,start_y),(goal_x,goal_y)) # cost to goal for the start node
