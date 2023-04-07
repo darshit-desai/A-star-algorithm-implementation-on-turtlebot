@@ -29,11 +29,11 @@ def bresenham_line(x0, y0, x1, y1):
     return points
 
 # Function that appends all the exploration nodes to a list new_nodes
-def move_robot(robot,curr_theta, costtocome):
+def move_robot(robot,curr_theta, costtocome, rpm1, rpm2):
     x,y=robot
     new_nodes = []
     for t in range(-60,61,30):
-        x_t,y_t, t_t, c2g, c2c=  actions(x,y,t,curr_theta,costtocome)
+        x_t,y_t, t_t, c2g, c2c=  actions(x,y,t,curr_theta,costtocome,rpm1,rpm2)
         robot_position=(x_t,y_t)
         points=bresenham_line(x,y,x_t,y_t)
         
@@ -45,7 +45,8 @@ def euclidean(x,y,xg,yg):
     return math.dist((x,y),(xg,yg))
 
 # Function that generated new postions and cost for robot exploration
-def actions(x,y,t,ct,c2c):
+def actions(x,y,t,ct,c2c,rpm1, rpm2):
+    action = [[0,rpm1],[rpm1,0],[rpm1,rpm1],[0, rpm2],[rpm2, 0],[rpm2, rpm2],[rpm1, rpm2],[rpm2, rpm1]]
     xr,yr=(round(x+step_size*np.cos(np.pi*(t+ct)/180)),round(y+step_size*np.sin(np.pi*(t+ct)/180)))
     c2g = euclidean(xr,yr,goal_x,goal_y)
     c2c = c2c+step_size
@@ -194,7 +195,7 @@ while True and end_loop!=1:
 
     info=open_list.get()
     dict_vector[info[5]]=[]
-    new_nodes=move_robot(info[5],info[6],info[1])
+    new_nodes=move_robot(info[5],info[6],info[1],RPM1,RPM2)
     for i in range(0,5):
         if(new_nodes[i][2]<=0.5):
             print("goal reached")
