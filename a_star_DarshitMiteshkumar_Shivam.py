@@ -66,7 +66,7 @@ while True:
         goal_y=200-goal_y
         robot_start_position=(start_x,start_y)
         robot_goal_position=(goal_x,goal_y)
-        if screen.get_at(robot_start_position) != white and screen.get_at(robot_goal_position)!=white:
+        if screen.get_at(robot_start_position) != white or screen.get_at(robot_goal_position)!=white:
             raise ValueError
         break
     except ValueError:
@@ -147,7 +147,7 @@ def new_node(new_node_list):
                 node_index += 1
                 global_dict[new_pos]=[total_cost,cost_to_come,cost_to_goal,node_index,info[3],new_pos,t]
                 open_list.put(global_dict[new_pos])
-                dict_vector[info[5]].append(new_pos)
+                dict_vector[info[5]]=(points)
             else:
                 if (global_dict[new_pos][1]>cost_to_come):
                     global_dict[new_pos][4]=info[3]
@@ -182,7 +182,6 @@ while True and end_loop!=1:
         break
 
     info=open_list.get()
-    dict_vector[info[5]]=[]
     new_nodes=move_robot(info[5],info[6],info[1])
     for i in range(0,8):
         if(new_nodes[i][2]<=0.5):
@@ -228,9 +227,8 @@ if goal_node!=None:
 
 # To draw the graph of exploration nodes on the canvas
 for key in dict_vector.keys():
-    for i in range (0,len(dict_vector[key])):
-        pyg.draw.aaline(screen_display,(0,0,0),key,dict_vector[key][i])
-        pyg.display.update()
+    pyg.draw.lines(screen_display,(0,0,0),False,dict_vector[key])
+    pyg.display.update()
 
 print("Length of closed nodes=",len(closed_list)) 
 
