@@ -53,7 +53,7 @@ def actions(x,y,t,ct,c2c):
 
 # Function that appends the generated nodes to the open list if node not in open list
 # If the list is in open list it updates the open list
-#hello its me
+# hello its me
 def new_node(new_node_list):
     total_cost=new_node_list[0]
     cost_to_come=new_node_list[1]
