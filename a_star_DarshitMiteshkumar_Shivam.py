@@ -14,46 +14,13 @@ import time
 # Function that appends the generated nodes to the open list if node not in open list
 # If the list is in open list it updates the open list
 # hello its me
-def new_node(new_node_list):
-    total_cost=new_node_list[0]
-    cost_to_come=new_node_list[1]
-    cost_to_goal=new_node_list[2]
-    new_pos=new_node_list[3]
-    t=new_node_list[4]
-    x,y=new_pos 
-    points=new_node_list[5]
-    if (((x>0 and x<600) and (y>0 and y<250))==True):
-        if ( not(any(screen.get_at((a,b))!=white for a,b in points)) and screen.get_at((new_pos)) == white and not (new_pos in check_closed_list)):
-            if not (new_pos in global_dict):
-                global node_index
-                node_index += 1
-                global_dict[new_pos]=[total_cost,cost_to_come,cost_to_goal,node_index,info[3],new_pos,t]
-                open_list.put(global_dict[new_pos])
-                dict_vector[info[5]].append(new_pos)
-            else:
-                if (global_dict[new_pos][1]>cost_to_come):
-                    global_dict[new_pos][4]=info[3]
-                    global_dict[new_pos][1]=cost_to_come
-                    global_dict[new_pos][0]=total_cost
-                    global_dict[new_pos][-1]=t
+
  
 # To input the step size from the user and validate the step size
-print("ROBOT PARAMETERS")
-print("***STEP SIZE OF THE ROBOT***")
-while True:    
-    step_size=int(input("Enter the step size \n"))
-    if (step_size<0):
-        print("Invalid step size try again. Step size should be greater than zero")
-        continue
-    elif (step_size>20):
-        print ("Invalid step size try again. Step size should be less than 20")
-        continue
-    else:
-        break
+
 #Turtlebot3 burger parameters
-radii = 0.105 #Turtlebot3 radius
-L = 0.160 #Turtlebot 3 wheel distance
-R = 0.033 #Robot wheel radius
+radii = 0.105*100 #Turtlebot3 radius
+white = (255,255,255)
 # Taking input from user for clearance and radius of robot and defining the canvas
 print("ROBOT CLEARANCE DIMENSIONS AND RADIUS(Radius is fixed). Enter valid dimensions between 0 to 50")
 while (True):
@@ -74,7 +41,6 @@ while (True):
         top_rect_dim = [(150-radii-clr,0),(165+radii+clr,0),(165+radii+clr,125+radii+clr),(150-radii-clr,125+radii+clr)]
         pyg.draw.polygon(screen,(255,0,0),top_rect_dim)
         pyg.draw.circle(screen, (255,0,0,),(400,90),50+radii+clr)
-        white = (255,255,255)
         break
     else:
         print("Invalid coordinates received, Try again")
@@ -96,8 +62,8 @@ while True:
         if (goal_theta%30!=0):
             print("Invalid Theta value try entering the coordinates again")
             continue
-        start_y=250-start_y
-        goal_y=250-goal_y
+        start_y=200-start_y
+        goal_y=200-goal_y
         robot_start_position=(start_x,start_y)
         robot_goal_position=(goal_x,goal_y)
         if screen.get_at(robot_start_position) != white and screen.get_at(robot_goal_position)!=white:
@@ -122,8 +88,8 @@ while True:
 
 def cost(Xi,Yi,Thetai,UL,UR):
     t = 0
-    r = 0.038
-    L = 0.354
+    L = 0.160*100 #Turtlebot 3 wheel distance
+    r = 0.033*100 #Robot wheel radius
     dt = 0.1
     Xn=Xi
     Yn=Yi
@@ -134,6 +100,7 @@ def cost(Xi,Yi,Thetai,UL,UR):
 # Xs, Ys: Start point coordinates for plot function
 # Xn, Yn, Thetan: End point coordintes
     D=0
+    points=[(Xn,Yn)]
     while t<1:
         t = t + dt
         Xs = Xn
@@ -142,8 +109,10 @@ def cost(Xi,Yi,Thetai,UL,UR):
         Yn = 0.5*r * (UL + UR) * math.sin(Thetan) * dt
         Thetan += (r / L) * (UR - UL) * dt
         D=D+ math.sqrt(math.pow((0.5*r * (UL + UR) * math.cos(Thetan) * dt),2)+math.pow((0.5*r * (UL + UR) * math.sin(Thetan) * dt),2))
+        points.append((Xn,Yn))
     Thetan = 180 * (Thetan) / 3.14
-    return Xn, Yn, Thetan, D
+    
+    return Xn, Yn, Thetan, D, points
 
 # for action in actions:
 #      k=cost(0,0,45, action[0],action[1])      # (0,0,45) hypothetical start configuration, this dosn't matter for calucating the edges'costs
@@ -151,16 +120,40 @@ def cost(Xi,Yi,Thetai,UL,UR):
 
 
 # Function that appends all the exploration nodes to a list new_nodes
-def move_robot(robot,curr_theta, costtocome, rpm1, rpm2):
+def move_robot(robot,curr_theta, costtocome):
     x,y=robot
     new_nodes = []
-    actions = [[0,rpm1],[rpm1,0],[rpm1,rpm1],[0, rpm2],[rpm2, 0],[rpm2, rpm2],[rpm1, rpm2],[rpm2, rpm1]]
+    actions = [[0,RPM1],[RPM1,0],[RPM1,RPM1],[0, RPM2],[RPM2, 0],[RPM2, RPM2],[RPM1, RPM2],[RPM2, RPM1]]
     for action in actions:
-        x_t,y_t, t_t,c2c=  actions(x,y,curr_theta,rpm1,rpm2)
+        x_t,y_t,t_t,c2c,points =  cost(x,y,curr_theta,action[0],action[1])
         c2g=math.dist((x_t,y_t),(goal_x,goal_y))
-        robot_position=(x_t,y_t)
-        new_nodes.append([c2g+c2c,c2c+costtocome,c2g,robot_position,t_t])
+        robot_position=(round(x_t),round(y_t))
+        costtocome=c2c+costtocome
+        new_nodes.append([c2g+costtocome,costtocome,c2g,robot_position,t_t,points])
     return new_nodes
+
+def new_node(new_node_list):
+    total_cost=new_node_list[0]
+    cost_to_come=new_node_list[1]
+    cost_to_goal=new_node_list[2]
+    new_pos=new_node_list[3]
+    t=new_node_list[4]
+    x,y=new_pos 
+    points=new_node_list[5]
+    if (((x>0 and x<600) and (y>0 and y<200))==True):
+        if ( not(any(screen.get_at((a,b))!=white for a,b in points)) and screen.get_at((new_pos)) == white and not (new_pos in check_closed_list)):
+            if not (new_pos in global_dict):
+                global node_index
+                node_index += 1
+                global_dict[new_pos]=[total_cost,cost_to_come,cost_to_goal,node_index,info[3],new_pos,t]
+                open_list.put(global_dict[new_pos])
+                dict_vector[info[5]].append(new_pos)
+            else:
+                if (global_dict[new_pos][1]>cost_to_come):
+                    global_dict[new_pos][4]=info[3]
+                    global_dict[new_pos][1]=cost_to_come
+                    global_dict[new_pos][0]=total_cost
+                    global_dict[new_pos][-1]=t
 
 ctc_node=0  # cost to come for start node
 ctc_goal=math.dist((start_x,start_y),(goal_x,goal_y)) # cost to goal for the start node
@@ -190,8 +183,8 @@ while True and end_loop!=1:
 
     info=open_list.get()
     dict_vector[info[5]]=[]
-    new_nodes=move_robot(info[5],info[6],info[1],RPM1,RPM2)
-    for i in range(0,5):
+    new_nodes=move_robot(info[5],info[6],info[1])
+    for i in range(0,8):
         if(new_nodes[i][2]<=0.5):
             print("goal reached")
             closed_list[node_index+i+1]=[new_nodes[i][0]+info[1],new_nodes[i][1]+info[1],new_nodes[i][2],info[4],new_nodes[i][3],new_nodes[i][4]]
@@ -203,6 +196,7 @@ while True and end_loop!=1:
                             
     # append the node to node list                                               
     closed_list[info[3]]=[info[0],info[1],info[2],info[4],info[5],info[6]]
+    print(closed_list[info[3]])
     check_closed_list[info[5]]=None
     
 
@@ -210,7 +204,7 @@ green=(0,255,0) # color for backtracking path line
 end_time=time.time() # to store end time for algorithm
 print("Total time taken for search:",end_time-start_time) # to check the total time taken for th algorithm
 
-screen_display = pyg.display.set_mode((600, 250)) # Create a screen
+screen_display = pyg.display.set_mode((600, 200)) # Create a screen
 screen_display.blit(screen, (0, 0))
 pyg.display.update()
 
