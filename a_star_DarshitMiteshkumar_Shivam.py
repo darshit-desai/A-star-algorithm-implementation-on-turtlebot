@@ -233,10 +233,12 @@ for key in dict_vector.keys():
 print("Length of closed nodes=",len(closed_list)) 
 
 # To draw the path taken by the robot from start node to goal node
-for i in range(0,len(path)):
-    if(i+1>len(path)-1):
-        break
-    pyg.draw.line(screen_display,green,path[i],path[i+1],width=1)
+for point in path:
+    # if(i+1>len(path)-1):
+    #     break
+    # pyg.draw.line(screen_display,green,path[i],path[i+1],width=1)
+    # pyg.display.update()
+    pyg.draw.lines(screen_display,(0,0,0),False,dict_vector[point])
     pyg.display.update()
     
 
