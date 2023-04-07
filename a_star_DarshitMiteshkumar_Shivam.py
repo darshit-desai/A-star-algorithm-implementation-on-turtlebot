@@ -61,26 +61,19 @@ while (True):
     if ((clr>0 and clr<50)):
         print("Valid coordinates received")
         #Define the Surface Map
-        screen = pyg.Surface((600, 250))
+        screen = pyg.Surface((600, 200))
         #Define the rectangles which make the base map
         rect_color = (255, 255, 255)
         #Define the rectangle which makes the outer border
-        rectangle1 = pyg.Rect(clr+radii, clr+radii, 600-2*(clr+radii), 250-2*(clr+radii))
+        rectangle1 = pyg.Rect(clr+radii, clr+radii, 600-2*(clr+radii), 200-2*(clr+radii))
         screen.fill((255,0,0))
         pyg.draw.rect(screen, rect_color, rectangle1)
         #Define the rectangle which makes the 2 rectangles
-        bottom_rect_dim = [(150+radii+clr,150-radii-clr),(150+radii+clr,250),(100-radii-clr,250),(100-radii-clr,150-radii-clr)]
+        bottom_rect_dim = [(250-radii-clr,200),(265+radii+clr,200),(265+radii+clr,75-radii-clr),(250-radii-clr,75-radii-clr)]
         pyg.draw.polygon(screen, (255,0,0),bottom_rect_dim)
-        top_rect_dim = [(100-radii-clr,0),(150+radii+clr,0),(150+radii+clr,100+radii+clr),(100-radii-clr,100+radii+clr)]
+        top_rect_dim = [(150-radii-clr,0),(165+radii+clr,0),(165+radii+clr,125+radii+clr),(150-radii-clr,125+radii+clr)]
         pyg.draw.polygon(screen,(255,0,0),top_rect_dim)
-        #Define the hexagon in the center with original dimensions
-        hexagon_dim = [(300,50-radii-clr),(364.95190528+radii+clr,87.5-((radii+clr)*np.tan(np.pi*30/180))),(364.95190528+radii+clr,162.5+((radii+clr)*np.tan(np.pi*30/180))),(300,200+radii+clr),(235.04809472-radii-clr,162.5+((radii+clr)*np.tan(np.pi*30/180))),(235.04809472-radii-clr,87.5-((radii+clr)*np.tan(np.pi*30/180)))]
-        # pyg.draw.polygon(screen,(255,0,0),hexagon_dim)
-        pyg.draw.polygon(screen,(255,0,0),hexagon_dim)
-        #Define the triangle with the original dimensions
-        triangle_dim = [(460-radii-clr,25-((radii+clr)/np.tan(np.pi*13.28/180))),(460.00-radii-clr,225+((radii+clr)/np.tan(np.pi*13.28/180))),(510+((radii+clr)/np.cos(np.pi*26.5650518/180)),125)]
-        # pyg.draw.polygon(screen,(255,0,0),triangle_dim)
-        pyg.draw.polygon(screen,(255,0,0), triangle_dim)
+        pyg.draw.circle(screen, (255,0,0,),(400,90),50+radii+clr)
         white = (255,255,255)
         break
     else:
