@@ -14,6 +14,22 @@ Download the code using https://github.com/darshit-desai/A-star-algorithm-implem
 
 For running the code use /bin/python3 /$PATH$/a_star_DarshitMiteshkumar_Shivam.py in the linux or VSCode Terminal
 
+The example set of inputs are given below:
+
+        ROBOT CLEARANCE DIMENSIONS AND RADIUS(Radius is fixed). Enter valid dimensions between 0 to 50
+        Enter the clearance of the robot: 5
+        Valid coordinates received
+        Enter Robot start and goal coordinates. Ensure that theta values are multiples of 30 deg
+        Enter the starting x coordinate: 25
+        Enter the starting y coordinate: 25
+        Enter the start theta orientation: 0
+        Enter the goal x coordinate:500
+        Enter the goal y coordinate: 110
+        Enter the goal theta orientation: 0
+        Enter the Robot RPM sets
+        Enter Robot wheel RPM 1: 5
+        Enter Robot wheel RPM 2: 10
+
 ### For Part 2
 
 For this the robot start position has been hard coded and set to (-25,-75), subsequently the values of rates and RPMs were tuned to get the desired output, One of the combinations of that output is mentioned below: (Note the coordinates inserted in the terminal are from the coordinate system considered in the bottom left corner of the pygame screen)
