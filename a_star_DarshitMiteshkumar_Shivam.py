@@ -248,9 +248,7 @@ while y!=0:
     pyg.draw.lines(screen_display,(255,0,0),False,global_dict[y][7])
 
     pyg.display.update()
-    y=global_dict[x][7][-1]
     
-
 
 # Set the caption of the screen
 pyg.display.set_caption('A* Visualization Map')
