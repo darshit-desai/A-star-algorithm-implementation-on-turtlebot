@@ -141,13 +141,14 @@ def new_node(new_node_list):
     x,y=new_pos 
     points=new_node_list[5]
     r_p_m = new_node_list[6]
-    print("current rpm",r_p_m)
+    
     if (((x>0 and x<600) and (y>0 and y<200))==True):
         if ( not(any(screen.get_at((a,b))!=white for a,b in points)) and screen.get_at((new_pos)) == white and not (new_pos in check_closed_list)):
             if not (new_pos in global_dict):
                 global node_index
                 node_index += 1
                 global_dict[new_pos]=[total_cost,cost_to_come,cost_to_goal,node_index,info[3],new_pos,t,points,r_p_m]
+                
                 open_list.put(global_dict[new_pos])
                 dict_vector[info[5]]=points
             else:
@@ -201,7 +202,7 @@ while True and end_loop!=1:
             break 
         new_node(new_nodes[i])
                                     
-    closed_list[info[3]]=[info[0],info[1],info[2],info[4],info[5],info[6],info[7]]
+    closed_list[info[3]]=[info[0],info[1],info[2],info[4],info[5],info[6],info[8]]
     print(closed_list[info[3]])
     check_closed_list[info[5]]=None
     
@@ -219,6 +220,7 @@ pyg.display.update()
 path = []
 path_theta_list = []
 RPM_list = []
+rospath = []
 if goal_node!=None:
     st_time = time.time()
     print("The final goal node is given by: ",goal_node)
@@ -278,47 +280,50 @@ while running:
 
 for i in range(0,len(path)):
     xt,yt = path[i]
+    
     yf = 200-yt
     yf1 = yf -100
     xf = xt-50
+    print("xcoordinate",xf)
     xf1 = xf/100
     yf2 = yf1/100
     path[i]=(xf1,yf2)
-print("I'm done till here")
+print("This are the new path coordinates",path)
 
 
-import rospy
+# import rospy
 
-rospy.init_node('ROS_AStar', anonymous=True)
-pub_vel = rospy.Publisher('cmd_vel',Twist,queue_size=100)
-msg = Twist()
-turtle_model = rospy.get_param("model","burger")
-msg.linear.x = 0.0
-msg.linear.y = 0.0
-msg.linear.z = 0.0
-msg.angular.x = 0.0
-msg.angular.y = 0.0
-msg.angular.z = 0.0
+# rospy.init_node('ROS_AStar', anonymous=True)
+# pub_vel = rospy.Publisher('cmd_vel',Twist,queue_size=100)
+# msg = Twist()
+# turtle_model = rospy.get_param("model","burger")
+# msg.linear.x = 0.0
+# msg.linear.y = 0.0
+# msg.linear.z = 0.0
+# msg.angular.x = 0.0
+# msg.angular.y = 0.0
+# msg.angular.z = 0.0
 
-pub_vel.publish(msg)
-r = rospy.Rate(10)
-t =1 #Time step
-for i in range(len(path)):
-    x1,y1 = path[i] 
-    x2,y2 = path[i+1]
-    t1 = path_theta_list[i]
-    t2 = path_theta_list[i+1]
-    dx = x2-x1
-    dy = y2-y1
-    vx = dx/t
-    vy = dy/t
-    dw = t2-t1
-    wt = dw/t
-    vel_inp = math.sqrt(vx**2+vy**2)
-    msg.linear.x = vel_inp
-    msg.angular.z = wt
-    pub_vel.publish(msg)
-    r.sleep()
+# pub_vel.publish(msg)
+# r = rospy.Rate(10)
+# t =1 #Time step
+# r = 0.033
+# L = 0.16
+# for i in range(len(path)):
+#     dt = 1
+#     ul,ur = RPM_list[i]
+#     ul = ul * 2 * math.pi / 60
+#     ur = ur * 2 * math.pi /60
+#     tn = 3.14 * path_theta_list[i]/180
+#     t_dot = (r/L)*(ur-ul)
+#     tdif = t_dot+tn
+#     xdot = (r/2)*(ur+ul)*math.cos(tdif)
+#     ydot = (r/2)*(ur+ul)*math.sin(tdif)
+#     vel_inp = math.sqrt(xdot**2 + ydot**2)
+#     msg.linear.x = vel_inp
+#     msg.angular.z = t_dot
+#     pub_vel.publish(msg)
+#     r.sleep()
 
 
 
