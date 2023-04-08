@@ -52,3 +52,9 @@ The results are currently stored in the google drive where phase 1 and phase 2 r
 
   * ![Video with goal point after the circle solution](https://drive.google.com/file/d/1EDF_HijzBKSzLHSFyeexxuSAhnIsqLh-/view?usp=share_link)
   * ![Video with goal point after the rectangles solution](https://drive.google.com/file/d/11D_dVWgj3gcSE6QI9WmnFu7JgLugiG3B/view?usp=share_link)
+
+## Dependencies
+    * Python 3.8
+    * pygame
+    * ROS Noetic
+    * Priority Queue
