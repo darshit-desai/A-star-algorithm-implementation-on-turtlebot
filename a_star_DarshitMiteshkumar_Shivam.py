@@ -184,17 +184,18 @@ while True and end_loop!=1:
     
     info=open_list.get()
     new_nodes=move_robot(info[5],info[6],info[1])
+    # append the node to node list                                               
     for i in range(0,8):
         if(new_nodes[i][2]<=0.5):
             print("goal reached")
+            print("I breaked at: ",i)
             closed_list[node_index+i+1]=[new_nodes[i][0]+info[1],new_nodes[i][1]+info[1],new_nodes[i][2],info[3],new_nodes[i][3],new_nodes[i][4]]
+            global_dict[new_nodes[i][3]]=[new_nodes[i][0],new_nodes[i][1],new_nodes[i][2],node_index+i+1,info[3],new_nodes[i][3],new_nodes[i][4],new_nodes[i][-1]]
             goal_node=node_index+i+1
             end_loop=1
             break 
         new_node(new_nodes[i])
-         
-                            
-    # append the node to node list                                               
+                                    
     closed_list[info[3]]=[info[0],info[1],info[2],info[4],info[5],info[6]]
     print(closed_list[info[3]])
     check_closed_list[info[5]]=None
@@ -237,7 +238,7 @@ for i in range(len(path)):
     # if i+1>len(path):
     #     break
     print(global_dict[path[i]])
-    pyg.draw.lines(screen_display,(255,0,0),False,global_dict[path[i]][7])
+    pyg.draw.lines(screen_display,(0,255,0),False,global_dict[path[i]][7])
 
     pyg.display.update()
 # for key, value in closed_list.items():
@@ -248,7 +249,8 @@ for i in range(len(path)):
 
 #     pyg.display.update()
     
-
+# for key, value in closed_list.items():
+#     print(f"{key}: {value}")
 # Set the caption of the screen
 pyg.display.set_caption('A* Visualization Map')
 pyg.display.update()
