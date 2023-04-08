@@ -187,7 +187,7 @@ while True and end_loop!=1:
     for i in range(0,8):
         if(new_nodes[i][2]<=0.5):
             print("goal reached")
-            closed_list[node_index+i+1]=[new_nodes[i][0]+info[1],new_nodes[i][1]+info[1],new_nodes[i][2],info[4],new_nodes[i][3],new_nodes[i][4]]
+            closed_list[node_index+i+1]=[new_nodes[i][0]+info[1],new_nodes[i][1]+info[1],new_nodes[i][2],info[3],new_nodes[i][3],new_nodes[i][4]]
             goal_node=node_index+i+1
             end_loop=1
             break 
@@ -217,9 +217,7 @@ if goal_node!=None:
     while goal_node is not None:
         goal_node_parent = closed_list[goal_node][3]
         path.append(closed_list[goal_node][4])
-        goal_node=goal_node_parent
-        
-        
+        goal_node=goal_node_parent        
     # reverse the path list to get the correct order of nodes
     path.reverse()
     et_time = time.time()
@@ -233,21 +231,22 @@ for key in dict_vector.keys():
 
 print("Length of closed nodes=",len(closed_list)) 
 path.pop(0)
-x=path.pop(0)
+# x=path.pop(0)
 # To draw the path taken by the robot from start node to goal node
-# for i in range(len(path)):
-#     # if i+1>len(path):
-#     #     break
-#     print(global_dict[path[i]])
-#     pyg.draw.lines(screen_display,(255,0,0),False,global_dict[path[i]][7])
-
-#     pyg.display.update()
-
-while y!=0:
-    print(global_dict[x][7])
-    pyg.draw.lines(screen_display,(255,0,0),False,global_dict[y][7])
+for i in range(len(path)):
+    # if i+1>len(path):
+    #     break
+    print(global_dict[path[i]])
+    pyg.draw.lines(screen_display,(255,0,0),False,global_dict[path[i]][7])
 
     pyg.display.update()
+# for key, value in closed_list.items():
+#     print(f"{key}: {value}\n")
+# while y!=0:
+#     print(global_dict[x][7])
+#     pyg.draw.lines(screen_display,(255,0,0),False,global_dict[y][7])
+
+#     pyg.display.update()
     
 
 # Set the caption of the screen
