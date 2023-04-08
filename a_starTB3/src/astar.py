@@ -1,3 +1,5 @@
+####PART 2 STARTS HERE####
+
 #!/usr/bin/env python3
 # import the pygame module
 import pygame as pyg

@@ -1,3 +1,5 @@
+####PART 1 STARTS HERE####
+
 import pygame as pyg
 import numpy as np
 from queue import PriorityQueue
