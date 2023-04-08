@@ -1,27 +1,16 @@
-# import the pygame module
 import pygame as pyg
 import numpy as np
-#import queue module
 from queue import PriorityQueue
 import math
 import time
 from geometry_msgs.msg import Twist
 
 
-
-# Function to calculate distance between two points
-
-# Function that appends the generated nodes to the open list if node not in open list
-# If the list is in open list it updates the open list
-# hello its me
-
- 
-# To input the step size from the user and validate the step size
-
 #Turtlebot3 burger parameters
 radii = 0.105*100 #Turtlebot3 radius
 white = (255,255,255)
-# Taking input from user for clearance and radius of robot and defining the canvas
+
+# Taking input from user for clearance  and defining the canvas
 print("ROBOT CLEARANCE DIMENSIONS AND RADIUS(Radius is fixed). Enter valid dimensions between 0 to 50")
 while (True):
     clr = int(input("Enter the clearance of the robot: "))
@@ -114,10 +103,6 @@ def cost(Xi,Yi,Thetai,UL,UR):
     
     return Xn, Yn, Thetan, D, points
 
-# for action in actions:
-#      k=cost(0,0,45, action[0],action[1])      # (0,0,45) hypothetical start configuration, this dosn't matter for calucating the edges'costs
-#      print(k[3])
-
 
 # Function that appends all the exploration nodes to a list new_nodes
 def move_robot(robot,curr_theta, costtocome):
@@ -132,6 +117,7 @@ def move_robot(robot,curr_theta, costtocome):
         new_nodes.append([c2g+total_cost_come,total_cost_come,c2g,robot_position,t_t,points,action])
     return new_nodes
 
+# Appends the new nodes to open list depending on conditions in the code
 def new_node(new_node_list):
     total_cost=new_node_list[0]
     cost_to_come=new_node_list[1]
@@ -167,8 +153,8 @@ node_index=0 # Index of the current node
 closed_list={} # dictionary to store information about the current node
 check_closed_list={} # dictionary to store the nodes to check if nodes present in closed list
 open_list=PriorityQueue() # list the store nodes and pop them according to priority
-rp_m = [0,0]
-pts = []
+rp_m = [0,0] # rpm
+pts = [] # points
 info=[ctc_goal+ctc_node,ctc_node,ctc_goal,node_index,parent_node_index,robot_start_position,start_theta,pts,rp_m] # list to save all info of a node
 open_list.put(info)
 global_dict={} # global dictionary to reference all the information for nodes in the open list and to update the information
@@ -194,7 +180,6 @@ while True and end_loop!=1:
     for i in range(0,8):
         if(new_nodes[i][2]<=0.5):
             print("goal reached")
-            print("I breaked at: ",i)
             closed_list[node_index+i+1]=[new_nodes[i][0]+info[1],new_nodes[i][1]+info[1],new_nodes[i][2],info[3],new_nodes[i][3],new_nodes[i][4],new_nodes[i][-1]]
             global_dict[new_nodes[i][3]]=[new_nodes[i][0],new_nodes[i][1],new_nodes[i][2],node_index+i+1,info[3],new_nodes[i][3],new_nodes[i][4],new_nodes[i][5],new_nodes[i][-1]]
             goal_node=node_index+i+1
@@ -203,7 +188,6 @@ while True and end_loop!=1:
         new_node(new_nodes[i])
                                     
     closed_list[info[3]]=[info[0],info[1],info[2],info[4],info[5],info[6],info[8]]
-    print(closed_list[info[3]])
     check_closed_list[info[5]]=None
     
 
@@ -245,28 +229,16 @@ for key in dict_vector.keys():
 
 print("Length of closed nodes=",len(closed_list)) 
 path.pop(0)
-# x=path.pop(0)
+
 # To draw the path taken by the robot from start node to goal node
 for i in range(len(path)):
-    # if i+1>len(path):
-    #     break
-    print(global_dict[path[i]])
-    pyg.draw.lines(screen_display,(0,255,0),False,global_dict[path[i]][7])
+
+    pyg.draw.lines(screen_display,green,False,global_dict[path[i]][7])
 
     pyg.display.update()
-# for key, value in closed_list.items():
-#     print(f"{key}: {value}\n")
-# while y!=0:
-#     print(global_dict[x][7])
-#     pyg.draw.lines(screen_display,(255,0,0),False,global_dict[y][7])
 
-#     pyg.display.update()
-    
-# for key, value in closed_list.items():
-#     print(f"{key}: {value}")
 # Set the caption of the screen
 print("RPM list length",len(RPM_list))
-print(RPM_list)
 pyg.display.set_caption('A* Visualization Map')
 pyg.display.update()
 pyg.time.wait(1)
@@ -278,17 +250,17 @@ while running:
 		if event.type == pyg.QUIT:
 			running = False
 
-for i in range(0,len(path)):
-    xt,yt = path[i]
+# for i in range(0,len(path)):
+#     xt,yt = path[i]
     
-    yf = 200-yt
-    yf1 = yf -100
-    xf = xt-50
-    print("xcoordinate",xf)
-    xf1 = xf/100
-    yf2 = yf1/100
-    path[i]=(xf1,yf2)
-print("This are the new path coordinates",path)
+#     yf = 200-yt
+#     yf1 = yf -100
+#     xf = xt-50
+#     print("xcoordinate",xf)
+#     xf1 = xf/100
+#     yf2 = yf1/100
+#     path[i]=(xf1,yf2)
+# print("This are the new path coordinates",path)
 
 
 # import rospy
