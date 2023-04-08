@@ -128,8 +128,8 @@ def move_robot(robot,curr_theta, costtocome):
         x_t,y_t,t_t,c2c,points =  cost(x,y,curr_theta,action[0],action[1])
         c2g=math.dist((x_t,y_t),(goal_x,goal_y))
         robot_position=(round(x_t),round(y_t))
-        costtocome=c2c+costtocome
-        new_nodes.append([c2g+costtocome,costtocome,c2g,robot_position,t_t,points])
+        total_cost_come=c2c+costtocome
+        new_nodes.append([c2g+total_cost_come,total_cost_come,c2g,robot_position,t_t,points])
     return new_nodes
 
 def new_node(new_node_list):
@@ -145,15 +145,16 @@ def new_node(new_node_list):
             if not (new_pos in global_dict):
                 global node_index
                 node_index += 1
-                global_dict[new_pos]=[total_cost,cost_to_come,cost_to_goal,node_index,info[3],new_pos,t]
+                global_dict[new_pos]=[total_cost,cost_to_come,cost_to_goal,node_index,info[3],new_pos,t,points]
                 open_list.put(global_dict[new_pos])
-                dict_vector[info[5]]=(points)
+                dict_vector[info[5]]=points
             else:
                 if (global_dict[new_pos][1]>cost_to_come):
                     global_dict[new_pos][4]=info[3]
                     global_dict[new_pos][1]=cost_to_come
                     global_dict[new_pos][0]=total_cost
-                    global_dict[new_pos][-1]=t
+                    global_dict[new_pos][6]=t
+                    global_dict[new_pos][7]=points
 
 ctc_node=0  # cost to come for start node
 ctc_goal=math.dist((start_x,start_y),(goal_x,goal_y)) # cost to goal for the start node
@@ -180,7 +181,7 @@ while True and end_loop!=1:
         print("No solution")
         goal_node=None
         break
-
+    
     info=open_list.get()
     new_nodes=move_robot(info[5],info[6],info[1])
     for i in range(0,8):
@@ -231,15 +232,23 @@ for key in dict_vector.keys():
     pyg.display.update()
 
 print("Length of closed nodes=",len(closed_list)) 
-
+path.pop(0)
+x=path.pop(0)
 # To draw the path taken by the robot from start node to goal node
-for point in path:
-    # if(i+1>len(path)-1):
-    #     break
-    # pyg.draw.line(screen_display,green,path[i],path[i+1],width=1)
-    # pyg.display.update()
-    pyg.draw.lines(screen_display,(0,0,0),False,dict_vector[point])
+# for i in range(len(path)):
+#     # if i+1>len(path):
+#     #     break
+#     print(global_dict[path[i]])
+#     pyg.draw.lines(screen_display,(255,0,0),False,global_dict[path[i]][7])
+
+#     pyg.display.update()
+
+while y!=0:
+    print(global_dict[x][7])
+    pyg.draw.lines(screen_display,(255,0,0),False,global_dict[y][7])
+
     pyg.display.update()
+    y=global_dict[x][7][-1]
     
 
 
