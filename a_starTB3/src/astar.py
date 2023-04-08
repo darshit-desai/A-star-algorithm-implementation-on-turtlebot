@@ -8,17 +8,6 @@ import math
 import time
 from geometry_msgs.msg import Twist
 
-
-
-# Function to calculate distance between two points
-
-# Function that appends the generated nodes to the open list if node not in open list
-# If the list is in open list it updates the open list
-# hello its me
-
- 
-# To input the step size from the user and validate the step size
-
 #Turtlebot3 burger parameters
 radii = 0.105*100 #Turtlebot3 radius
 white = (255,255,255)
@@ -115,11 +104,6 @@ def cost(Xi,Yi,Thetai,UL,UR):
     
     return Xn, Yn, Thetan, D, points
 
-# for action in actions:
-#      k=cost(0,0,45, action[0],action[1])      # (0,0,45) hypothetical start configuration, this dosn't matter for calucating the edges'costs
-#      print(k[3])
-
-
 # Function that appends all the exploration nodes to a list new_nodes
 def move_robot(robot,curr_theta, costtocome):
     x,y=robot
@@ -149,7 +133,6 @@ def new_node(new_node_list):
                 global node_index
                 node_index += 1
                 global_dict[new_pos]=[total_cost,cost_to_come,cost_to_goal,node_index,info[3],new_pos,t,points,r_p_m]
-                print("New node",global_dict[new_pos])
                 open_list.put(global_dict[new_pos])
                 dict_vector[info[5]]=points
             else:
@@ -195,7 +178,6 @@ while True and end_loop!=1:
     for i in range(0,8):
         if(new_nodes[i][2]<=0.5):
             print("goal reached")
-            print("I breaked at: ",i)
             closed_list[node_index+i+1]=[new_nodes[i][0]+info[1],new_nodes[i][1]+info[1],new_nodes[i][2],info[3],new_nodes[i][3],new_nodes[i][4],new_nodes[i][-1]]
             global_dict[new_nodes[i][3]]=[new_nodes[i][0],new_nodes[i][1],new_nodes[i][2],node_index+i+1,info[3],new_nodes[i][3],new_nodes[i][4],new_nodes[i][5],new_nodes[i][-1]]
             goal_node=node_index+i+1
@@ -204,7 +186,6 @@ while True and end_loop!=1:
         new_node(new_nodes[i])
                                     
     closed_list[info[3]]=[info[0],info[1],info[2],info[4],info[5],info[6],info[8]]
-    print(closed_list[info[3]])
     check_closed_list[info[5]]=None
     
 
@@ -245,28 +226,10 @@ for key in dict_vector.keys():
 
 print("Length of closed nodes=",len(closed_list)) 
 path.pop(0)
-# x=path.pop(0)
 # To draw the path taken by the robot from start node to goal node
 for i in range(len(path)):
-    # if i+1>len(path):
-    #     break
-    print(global_dict[path[i]])
     pyg.draw.lines(screen_display,(0,255,0),False,global_dict[path[i]][7])
-
     pyg.display.update()
-# for key, value in closed_list.items():
-#     print(f"{key}: {value}\n")
-# while y!=0:
-#     print(global_dict[x][7])
-#     pyg.draw.lines(screen_display,(255,0,0),False,global_dict[y][7])
-
-#     pyg.display.update()
-    
-# for key, value in closed_list.items():
-#     print(f"{key}: {value}")
-# Set the caption of the screen
-print("RPM list length",len(RPM_list))
-print(RPM_list)
 pyg.display.set_caption('A* Visualization Map')
 pyg.display.update()
 pyg.time.wait(1)
@@ -286,8 +249,6 @@ for i in range(0,len(path)):
     xf1 = xf/100
     yf2 = yf1/100
     path[i]=(xf1,yf2)
-print("I'm done till here")
-
 
 import rospy
 
